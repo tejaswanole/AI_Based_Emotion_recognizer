@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EmotionSense Control Panel</title>
+    <style>
+        :root { --primary: #00ff88; --bg: #0f0f0f; --card: #1a1a1a; --text: #e0e0e0; }
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); text-align: center; }
+        
+        /* Header */
+        header { padding: 40px; background: radial-gradient(circle, #1a2a22 0%, #0f0f0f 70%); }
+        h1 { margin: 0; font-size: 3rem; }
+        p { color: #888; }
+
+        /* Grid Layout */
+        .container { max-width: 900px; margin: 50px auto; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; padding: 20px; }
+        
+        /* Interactive Cards */
+        .card { 
+            background: var(--card); border: 1px solid #333; padding: 40px; border-radius: 20px; 
+            transition: 0.3s; display: flex; flex-direction: column; align-items: center;
+        }
+        .card:hover { transform: translateY(-10px); border-color: var(--primary); box-shadow: 0 0 20px rgba(0,255,136,0.2); }
+        
+        .icon { font-size: 4rem; margin-bottom: 20px; }
+        
+        /* The Magic Buttons */
+        .btn {
+            background: var(--primary); color: #000; border: none; padding: 15px 40px; 
+            font-size: 1.2rem; font-weight: bold; border-radius: 50px; cursor: pointer; margin-top: 20px;
+            transition: 0.2s;
+        }
+        .btn:hover { background: #fff; transform: scale(1.05); }
+        .btn:active { transform: scale(0.95); }
+
+        /* Status Message Toast */
+        #status-msg {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            background: #333; color: white; padding: 15px 30px; border-radius: 30px;
+            opacity: 0; transition: opacity 0.5s;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>AI Control Dashboard</h1>
+        <p>Launch your Python Applications directly from here.</p>
+    </header>
+
+    <div class="container">
+        
+        <div class="card">
+            <div class="icon">🎵</div>
+            <h2>Mood DJ</h2>
+            <p>Detects emotions and plays Spotify.</p>
+            <button class="btn" onclick="runScript('/run_mood_dj')">Launch Demo 1</button>
+        </div>
+
+        <div class="card">
+            <div class="icon">👁️</div>
+            <h2>Focus Guardian</h2>
+            <p>Alerts parents if student is sleeping.</p>
+            <button class="btn" onclick="runScript('/run_focus_guardian')">Launch Demo 2</button>
+        </div>
+
+    </div>
+
+    <div id="status-msg">Command Sent...</div>
+
+    <script>
+        // This JavaScript sends the signal to your Python app.py
+        function runScript(route) {
+            showToast("🚀 Starting Application...");
+            
+            fetch(route, { method: 'POST' })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                if(data.status === "success") {
+                    showToast("✅ " + data.message);
+                } else {
+                    showToast("❌ Error: " + data.message);
+                }
+            })
+            .catch(error => {
+                showToast("❌ Connection Failed");
+                console.error('Error:', error);
+            });
+        }
+
+        function showToast(text) {
+            const msg = document.getElementById("status-msg");
+            msg.innerText = text;
+            msg.style.opacity = "1";
+            setTimeout(() => { msg.style.opacity = "0"; }, 3000);
+        }
+    </script>
+</body>
+</html>
